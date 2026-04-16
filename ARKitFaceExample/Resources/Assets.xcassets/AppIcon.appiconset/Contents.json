@@ -1,0 +1,14 @@
+{
+  "images" : [
+    {
+      "filename" : "生成AR换京剧脸谱图标-2.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

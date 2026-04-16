@@ -1,0 +1,13 @@
+﻿.DS_Store
+Thumbs.db
+__MACOSX/
+*.log
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.xcuserdata
+*.xcuserstate
+DerivedData/
+build/
