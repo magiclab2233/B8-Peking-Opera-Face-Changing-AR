@@ -1,93 +1,116 @@
-# PekingOperaMasks
+# B8-脸谱AR秀：京剧变脸互动体验
 
+## 项目简介
 
+脸谱AR秀是一款基于 iOS ARKit 人脸追踪技术的增强现实应用，将传统京剧脸谱文化与 AR 技术深度融合。用户可以在相机中实时预览自己佩戴不同京剧脸谱的效果，通过点击界面按钮一键切换脸谱，并支持拍照保存到本地相册，便于社交媒体分享与传播。
 
-## Getting started
+项目旨在解决京剧脸谱文化传播形式传统、缺乏互动性与趣味性的问题，让年轻用户以沉浸式方式接触和体验中华非遗文化。
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## 功能特点
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- **实时人脸识别与跟踪**：使用 ARKit 提供的 `ARFaceTrackingConfiguration`，实时捕捉用户面部特征，实现 3D 几何脸部模型叠加。
+- **京剧脸谱贴图**：精选多种京剧脸谱素材，用户可从右侧弹出的脸谱列表（自定义 View + UICollectionView）中选择并实时替换。
+- **一键拍照保存**：支持一键保存当前 AR 贴图画面，拍摄照片保存到 iOS 相册，方便分享。
+- **流畅的 AR 渲染体验**：基于 SceneKit 实现高质量 3D 脸谱渲染，贴合面部轮廓，随表情实时变形。
 
-## Add your files
+## 技术架构与实现原理
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### 整体架构
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.bj.sensetime.com/innoflow/kcprojectlist/pekingoperamasks.git
-git branch -M main
-git push -uf origin main
+iPhone 前置摄像头 → ARSession(ARFaceTrackingConfiguration) → ARSCNView → SceneKit 渲染 → 脸谱贴图叠加
 ```
 
-## Integrate with your tools
+### 核心技术
 
-- [ ] [Set up project integrations](https://gitlab.bj.sensetime.com/innoflow/kcprojectlist/pekingoperamasks/-/settings/integrations)
+- **ARKit**：苹果增强现实框架，提供高精度的面部追踪与 3D 几何网格生成。
+- **SceneKit**：3D 场景渲染引擎，用于将脸谱纹理贴合到 `ARSCNFaceGeometry` 上。
+- **ARSCNFaceGeometry**：根据用户面部形状动态生成的 3D 几何体，确保脸谱完美贴合。
+- **UICollectionView**：右侧弹出式脸谱选择面板，支持横向滑动浏览。
+- **AVFoundation / Photos**：拍照截图与相册保存。
 
-## Collaborate with your team
+### 关键源码说明
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+- `ViewController.swift`：主界面控制器，管理 ARSession 生命周期、脸谱切换逻辑与拍照功能。
+- `VirtualContentUpdater.swift`：AR 内容更新器，处理面部锚点变化时的内容同步。
+- `Mask.swift`：脸谱遮罩模型，定义如何将纹理应用到面部几何体上。
+- `VirtualFaceContent.swift`：虚拟面部内容协议与基础实现。
+- `BottomSheetFacePickerView.swift`：底部/侧滑脸谱选择器视图。
+- `RobotHead.swift`：额外的虚拟头部内容示例（如机器人头部特效）。
 
-## Test and Deploy
+## 项目目录结构
 
-Use the built-in continuous integration in GitLab.
+```
+B8-脸谱AR秀：京剧变脸互动体验/
+├── ARKitFaceExample.xcodeproj/     # Xcode 工程文件
+├── ARKitFaceExample/
+│   ├── AppDelegate.swift
+│   ├── ViewController.swift
+│   ├── StatusViewController.swift
+│   ├── VirtualContentUpdater.swift
+│   ├── BottomSheetFacePickerView.swift
+│   ├── RobotHead.swift
+│   ├── Base.lproj/
+│   │   └── Main.storyboard
+│   ├── Content Selection/
+│   │   └── VirtualContentType.swift
+│   ├── VirtualFaceContent/
+│   │   ├── Mask.swift
+│   │   └── VirtualFaceContent.swift
+│   └── Resources/
+│       ├── Info.plist
+│       └── LaunchScreen.storyboard
+├── Configuration/
+│   └── SampleCode.xcconfig
+├── Documentation/
+│   └── FaceExampleModes.png
+├── LICENSE/
+│   └── LICENSE.txt
+└── README.md
+```
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+## 安装与运行说明
 
-***
+### 环境要求
 
-# Editing this README
+- macOS 系统 + Mac 电脑
+- iPhone / iPad（支持 Face ID 或前置深感摄像头，iOS 15+）及数据线
+- Apple ID（建议注册免费开发者账号）
+- Xcode（最新版，通过 App Store 安装）
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### 安装步骤
 
-## Suggestions for a good README
+1. 克隆项目到本地：
+   ```bash
+   git clone https://github.com/magiclab2233/B8-Peking-Opera-Face-Changing-AR.git
+   cd B8-Peking-Opera-Face-Changing-AR
+   ```
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+2. 打开 Xcode 工程：
+   ```bash
+   open ARKitFaceExample.xcodeproj
+   ```
 
-## Name
-Choose a self-explaining name for your project.
+3. Xcode 签名配置：
+   - 选择工程文件 → 修改 Bundle Identifier
+   - 勾选 "Automatically manage signing"
+   - Team 中选择个人 Apple ID 对应的免费开发者证书
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+4. 连接 iPhone，选择设备后点击运行按钮。
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### 首次运行注意事项
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+- **开启开发者模式**：设置 → 隐私与安全 → 开发者模式 → 打开（需重启）。
+- **信任开发者证书**：设置 → 通用 → VPN 与设备管理 → 选择个人证书 → 点击信任。
+- **ARKit 面部追踪需要 TrueDepth 摄像头**，请在 iPhone X 及以上机型运行。
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## 使用场景
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+- **非遗文化科普展厅/教育课堂**：作为京剧文化的互动体验装置。
+- **博物馆互动装置**：让观众以 AR 方式体验传统脸谱艺术。
+- **社交媒体分享**：用户拍照生成个性化的京剧脸谱照片，分享到朋友圈。
+- **青少年传统文化学习**：以趣味互动形式激发年轻人对中华传统文化的兴趣。
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+## 许可证/声明
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+本项目基于 ARKit 与 SceneKit 开发，部分示例代码遵循苹果官方 Sample Code 许可协议。项目仅供学习、教学演示与课程设计使用，涉及的京剧脸谱素材版权归原作者所有。
