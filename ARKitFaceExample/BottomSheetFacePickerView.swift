@@ -2,7 +2,7 @@
 //  BottomSheetFacePickerView.swift
 //  ARKitFaceExample
 //
-//  Created by SenseTime on 2025/5/7.
+//  Created by AIPlatform on 2025/5/7.
 //  Copyright © 2025 Apple. All rights reserved.
 //
 
